@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Доступ запрещён — RENTA{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <h1 style="font-size: 6rem; color: var(--accent);" class="fw-bold">403</h1>
+    <h3 class="mb-3">Доступ запрещён</h3>
+    <p class="text-muted mb-4">У вас нет прав для просмотра этой страницы.</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-primary">На главную</a>
+</div>
+{% endblock %}
