@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}RENTA — Аренда жилья для молодых{% endblock %}
+{% block content %}
+<section class="hero-section text-center">
+    <div class="container position-relative">
+        <h1 class="display-4 fw-bold mb-3" style="font-family: 'Montserrat', sans-serif;">
+            Найди своё жильё с <span style="color: var(--accent);">RENTA</span>
+        </h1>
+        <p class="lead mb-4">Квартиры, комнаты и дома для молодых людей от 18 до 35 лет</p>
+        <form class="hero-search mx-auto" style="max-width: 600px;" method="GET" action="{{ url_for('main.catalog') }}">
+            <div class="input-group">
+                <input type="text" name="city" class="form-control" placeholder="Введите город..." required>
+                <button class="btn btn-primary" type="submit">Найти</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="container py-5">
+    <h2 class="text-center mb-4">Популярные объявления</h2>
+    <div class="row g-4">
+        {% for prop in properties %}
+        <div class="col-md-4 col-lg-4">
+            <div class="card property-card h-100">
+                {% set img = prop.main_image() %}
+                {% if img %}
+                <img src="{{ url_for('static', filename='uploads/' + img) }}" class="card-img-top" alt="{{ prop.title }}">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span class="text-white">Нет фото</span>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ prop.title }}</h5>
+                    <p class="card-text text-muted small mb-1">
+                        <i class="bi bi-geo-alt"></i> {{ prop.city }}
+                    </p>
+                    <p class="card-text text-muted small mb-2">
+                        {% if prop.rooms %} {{ prop.rooms }} комн. · {% endif %}
+                        {% if prop.area %}{{ prop.area }} м²{% endif %}
+                    </p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <span class="fw-bold" style="color: var(--accent); font-size: 1.2rem;">
+                            {{ prop.price }} ₽
+                            {% if prop.price_type == 'month' %}/мес{% elif prop.price_type == 'day' %}/сут{% else %}/место{% endif %}
+                        </span>
+                        <a href="{{ url_for('property.detail', id=prop.id) }}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="bg-white py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Как это работает</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-icon"><i class="bi bi-search"></i></div>
+                    <h5>Выбери жильё</h5>
+                    <p class="text-muted">Просматривай каталог, фильтруй по городу и цене, находи идеальный вариант.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-icon"><i class="bi bi-envelope-paper"></i></div>
+                    <h5>Отправь заявку</h5>
+                    <p class="text-muted">Оставь заявку арендодателю и договорись о просмотре.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-icon"><i class="bi bi-house-heart"></i></div>
+                    <h5>Заселяйся</h5>
+                    <p class="text-muted">Одобрение получено — заезжай и наслаждайся новым домом!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2>О RENTA</h2>
+            <p class="text-muted">RENTA — это современный сервис аренды жилья, созданный специально для молодых людей. Мы помогаем найти квартиру, комнату или дом быстро, удобно и безопасно.</p>
+            <p class="text-muted">Тысячи объявлений по всей России, удобный поиск, отзывы реальных жильцов — всё, чтобы ты чувствовал себя как дома.</p>
+            <a href="{{ url_for('main.about') }}" class="btn btn-outline-primary">Подробнее →</a>
+        </div>
+        <div class="col-md-6">
+            <img src="https://picsum.photos/600/400?random=2" alt="О RENTA" class="img-fluid rounded shadow-sm">
+        </div>
+    </div>
+</section>
+{% endblock %}

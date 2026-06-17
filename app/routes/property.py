@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-property_bp = Blueprint('property', __name__, template_folder='../templates/property')
+property_bp = Blueprint('property', __name__)
 
 
 @property_bp.route('/<int:id>')

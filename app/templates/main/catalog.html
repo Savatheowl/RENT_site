@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Каталог жилья — RENTA{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Каталог жилья</h2>
+
+    <form class="row g-3 mb-4 p-3 bg-white rounded shadow-sm" method="GET">
+        <div class="col-md-3">
+            <input type="text" name="city" class="form-control" placeholder="Город" value="{{ request.args.get('city', '') }}">
+        </div>
+        <div class="col-md-2">
+            <select name="property_type" class="form-select">
+                <option value="">Все типы</option>
+                <option value="apartment" {% if request.args.get('property_type') == 'apartment' %}selected{% endif %}>Квартира</option>
+                <option value="house" {% if request.args.get('property_type') == 'house' %}selected{% endif %}>Дом</option>
+                <option value="room" {% if request.args.get('property_type') == 'room' %}selected{% endif %}>Комната</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="price_min" class="form-control" placeholder="Цена от" value="{{ request.args.get('price_min', '') }}">
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="price_max" class="form-control" placeholder="Цена до" value="{{ request.args.get('price_max', '') }}">
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+        </div>
+    </form>
+
+    {% if properties.items %}
+    <div class="row g-4">
+        {% for prop in properties.items %}
+        <div class="col-md-4 col-lg-3">
+            <div class="card property-card h-100">
+                {% set img = prop.main_image() %}
+                {% if img %}
+                <img src="{{ url_for('static', filename='uploads/' + img) }}" class="card-img-top" alt="{{ prop.title }}">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span class="text-white">Нет фото</span>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title">{{ prop.title[:50] }}{% if prop.title|length > 50 %}...{% endif %}</h6>
+                    <p class="card-text text-muted small mb-1">
+                        <i class="bi bi-geo-alt"></i> {{ prop.city }}
+                    </p>
+                    <p class="card-text text-muted small mb-2">
+                        {% if prop.property_type == 'apartment' %}Квартира{% elif prop.property_type == 'house' %}Дом{% else %}Комната{% endif %}
+                    </p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <span class="fw-bold" style="color: var(--accent);">
+                            {{ prop.price }} ₽
+                            {% if prop.price_type == 'month' %}/мес{% elif prop.price_type == 'day' %}/сут{% else %}/место{% endif %}
+                        </span>
+                        <a href="{{ url_for('property.detail', id=prop.id) }}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if properties.has_prev %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('main.catalog', page=properties.prev_num, **request.args) }}">Назад</a></li>
+            {% endif %}
+            {% for page_num in properties.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                <li class="page-item {% if page_num == properties.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.catalog', page=page_num, **request.args) }}">{{ page_num }}</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+            {% if properties.has_next %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('main.catalog', page=properties.next_num, **request.args) }}">Вперёд</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+    <div class="text-center py-5">
+        <h4 class="text-muted">Объявлений не найдено</h4>
+        <p>Попробуйте изменить параметры фильтрации.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

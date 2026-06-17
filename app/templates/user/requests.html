@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Мои заявки — RENTA{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Мои заявки</h2>
+    {% if requests %}
+    <div class="row g-4">
+        {% for req in requests %}
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5><a href="{{ url_for('property.detail', id=req.property_id) }}" class="text-decoration-none">{{ req.property.title }}</a></h5>
+                            <p class="text-muted small mb-2">{{ req.property.city }} · {{ req.property.price }} ₽</p>
+                            {% if req.message %}
+                            <p class="mb-2"><strong>Сообщение:</strong> {{ req.message }}</p>
+                            {% endif %}
+                        </div>
+                        <span class="badge {% if req.status == 'approved' %}bg-success{% elif req.status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                            {% if req.status == 'pending' %}В ожидании{% elif req.status == 'approved' %}Одобрено{% else %}Отклонено{% endif %}
+                        </span>
+                    </div>
+                    <small class="text-muted">{{ req.created_at.strftime('%d.%m.%Y') }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <h4 class="text-muted">У вас пока нет заявок</h4>
+        <a href="{{ url_for('main.catalog') }}" class="btn btn-primary mt-3">Найти жильё</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
