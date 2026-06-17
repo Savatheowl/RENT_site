@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}RENTA — Аренда жилья{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.3/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-icons-1.11.3/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -21,6 +22,9 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.catalog') }}">Каталог</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.agencies') }}">Агентства</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.about') }}">О нас</a>
@@ -46,10 +50,10 @@
                                 {{ current_user.name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ url_for('profile') }}">Профиль</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.profile') }}">Профиль</a></li>
                                 {% if current_user.is_tenant() %}
-                                <li><a class="dropdown-item" href="{{ url_for('favorites') }}">Избранное</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('my_requests') }}">Мои заявки</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.favorites') }}">Избранное</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.my_requests') }}">Мои заявки</a></li>
                                 {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Выйти</a></li>
@@ -88,19 +92,19 @@
             <div class="row">
                 <div class="col-md-4">
                     <h5 class="fw-bold" style="color: var(--accent);">RENTA</h5>
-                    <p class="text-muted small">Надёжный сервис аренды жилья для молодых людей.</p>
+                    <p class="text-white-50 small">Надёжный сервис аренды жилья для молодых людей.</p>
                 </div>
                 <div class="col-md-4">
                     <h6>Навигация</h6>
                     <ul class="list-unstyled small">
-                        <li><a href="{{ url_for('main.catalog') }}" class="text-muted text-decoration-none">Каталог</a></li>
-                        <li><a href="{{ url_for('main.about') }}" class="text-muted text-decoration-none">О нас</a></li>
-                        <li><a href="{{ url_for('main.contacts') }}" class="text-muted text-decoration-none">Контакты</a></li>
+                        <li><a href="{{ url_for('main.catalog') }}" class="text-white-50 text-decoration-none">Каталог</a></li>
+                        <li><a href="{{ url_for('main.about') }}" class="text-white-50 text-decoration-none">О нас</a></li>
+                        <li><a href="{{ url_for('main.contacts') }}" class="text-white-50 text-decoration-none">Контакты</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h6>Контакты</h6>
-                    <ul class="list-unstyled small text-muted">
+                    <ul class="list-unstyled small text-white-50">
                         <li>info@renta.ru</li>
                         <li>+7 (999) 123-45-67</li>
                         <li>Москва, ул. Тверская, 1</li>
@@ -108,11 +112,12 @@
                 </div>
             </div>
             <hr class="border-secondary">
-            <p class="text-center text-muted small mb-0">&copy; 2026 RENTA. Все права защищены.</p>
+            <p class="text-center text-white-50 small mb-0">&copy; 2026 RENTA. Все права защищены.</p>
         </div>
     </footer>
 
     <script src="{{ url_for('static', filename='bootstrap-5.3/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

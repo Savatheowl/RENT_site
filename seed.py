@@ -3,7 +3,7 @@ import random
 import requests
 from datetime import datetime, timezone
 from app import create_app, db
-from app.models import User, Property, PropertyImage, Request, Favorite, Review
+from app.models import User, Property, PropertyImage, Request, Favorite, Review, Agency
 from faker import Faker
 
 app = create_app()
@@ -80,6 +80,21 @@ def seed():
 
         db.session.commit()
 
+        print('Creating agencies...')
+        agencies = []
+        agency_names = ['Городская Недвижимость', 'Этажи Плюс', 'Ключ-Аренда', 'ДомКомфорт']
+        for name in agency_names:
+            agency = Agency(
+                name=name,
+                description=f'{name} — надёжное агентство недвижимости с многолетним опытом работы на рынке аренды жилья.',
+                city=random.choice(CITIES),
+                phone=f'+7 (9{random.randint(10,99)}) {random.randint(100,999)}-{random.randint(10,99)}-{random.randint(10,99)}',
+                email=f'info@{name.lower().replace(" ", "")}.ru',
+            )
+            db.session.add(agency)
+            agencies.append(agency)
+        db.session.commit()
+
         print('Creating properties...')
         properties = []
         for i in range(10):
@@ -92,21 +107,26 @@ def seed():
                 'bed': random.randint(5000, 20000),
             }
 
+            prop_type = random.choice(PROPERTY_TYPES)
+            max_floor = random.randint(5, 25)
+            floor = random.randint(1, max_floor) if prop_type == 'apartment' else None
+
             property_obj = Property(
                 landlord_id=random.choice(landlords).id,
+                agency_id=random.choice(agencies).id if random.random() > 0.5 else None,
                 title=f'Уютная {random.choice(["студия", "квартира", "комната"])} на {street}, {random.randint(1, 150)}',
                 description=f'Светлое уютное жильё в центре города. Рядом метро, магазины, парк. '
                             f'Идеально подходит для молодых людей и студентов. '
                             f'Полностью меблировано, есть вся необходимая техника.',
                 price=base_price[price_type],
                 price_type=price_type,
-                property_type=random.choice(PROPERTY_TYPES),
+                property_type=prop_type,
                 city=city,
                 address=f'ул. {street}, д. {random.randint(1, 100)}, кв. {random.randint(1, 200)}',
                 rooms=random.randint(1, 4) if random.random() > 0.3 else None,
                 area=round(random.uniform(18, 120), 1),
-                floor=random.randint(1, 20),
-                max_floor=random.randint(5, 25),
+                floor=floor,
+                max_floor=max_floor if prop_type == 'apartment' else None,
                 lat=random.uniform(55.5, 56.0) if 'Москв' in city else random.uniform(55.0, 60.0),
                 lng=random.uniform(37.0, 38.0) if 'Москв' in city else random.uniform(30.0, 50.0),
                 status='active',

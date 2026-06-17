@@ -30,6 +30,13 @@ def create_app(config_class=Config):
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
     app.register_blueprint(admin_bp, url_prefix='/admin')
 
+    @app.template_filter('price_format')
+    def price_format(value):
+        try:
+            return f"{int(value):,}".replace(',', ' ')
+        except (ValueError, TypeError):
+            return value
+
     @app.errorhandler(404)
     def not_found(e):
         return render_template('errors/404.html'), 404

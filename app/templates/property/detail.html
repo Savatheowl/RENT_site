@@ -43,9 +43,13 @@
             </p>
             <p><i class="bi bi-geo-alt" style="color: var(--accent);"></i> {{ property.city }}, {{ property.address }}</p>
 
-            <h3 style="color: var(--accent);">{{ property.price }} ₽
+            <h3 style="color: var(--accent);">{{ property.price|price_format }} ₽
                 {% if property.price_type == 'month' %}/месяц{% elif property.price_type == 'day' %}/сутки{% else %}/койко-место{% endif %}
             </h3>
+
+            <div class="card no-hover p-3 mb-3">
+                <div id="property-map" class="map-container"></div>
+            </div>
 
             <hr>
             <h5>Описание</h5>
@@ -53,7 +57,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card shadow-sm mb-3">
+            <div class="card shadow-sm mb-3 no-hover">
                 <div class="card-body">
                     {% if current_user.is_authenticated and current_user.is_tenant() %}
                     <form method="POST">
@@ -76,10 +80,13 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-3">
+            <div class="card shadow-sm mb-3 no-hover">
                 <div class="card-body">
                     <h5>Арендодатель</h5>
                     <p class="mb-1"><strong>{{ property.landlord.name }}</strong></p>
+                    {% if property.agency %}
+                    <p class="mb-1 small"><i class="bi bi-building"></i> <a href="{{ url_for('main.agency_detail', id=property.agency.id) }}">{{ property.agency.name }}</a></p>
+                    {% endif %}
                     {% if avg_rating > 0 %}
                     <p class="mb-1">
                         {% for i in range(5) %}
@@ -92,11 +99,11 @@
             </div>
 
             {% if landlord_reviews %}
-            <div class="card shadow-sm">
+            <div class="card shadow-sm mb-3 reviews-card no-hover">
                 <div class="card-body">
                     <h5>Отзывы об арендодателе</h5>
                     {% for review in landlord_reviews %}
-                    <div class="mb-3 pb-2 border-bottom">
+                    <div class="review-item mb-2">
                         <div class="d-flex justify-content-between">
                             <strong>{{ review.author.name }}</strong>
                             <span>
@@ -114,7 +121,7 @@
             {% endif %}
 
             {% if current_user.is_authenticated and current_user.is_tenant() %}
-            <div class="card shadow-sm mt-3">
+            <div class="card shadow-sm mt-3 no-hover">
                 <div class="card-body">
                     <h5>Оставить отзыв</h5>
                     <form method="POST">
@@ -143,4 +150,19 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block extra_js %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var lat = {{ property.latitude or 55.7558 }};
+    var lng = {{ property.longitude or 37.6173 }};
+    var map = L.map('property-map').setView([lat, lng], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    L.marker([lat, lng]).addTo(map).bindPopup('<strong>{{ property.title }}</strong><br>{{ property.city }}, {{ property.address }}');
+});
+</script>
 {% endblock %}

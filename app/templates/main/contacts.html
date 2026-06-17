@@ -2,25 +2,49 @@
 {% block title %}Контакты — RENTA{% endblock %}
 {% block content %}
 <div class="container py-5">
-    <h2 class="mb-4">Контакты</h2>
-    <div class="row">
+    <h2 class="text-center mb-4">Контакты</h2>
+    <div class="row g-4">
         <div class="col-md-6">
-            <div class="card shadow-sm p-4">
-                <h5>Свяжитесь с нами</h5>
-                <p class="mb-2"><i class="bi bi-envelope me-2" style="color: var(--accent);"></i> info@renta.ru</p>
-                <p class="mb-2"><i class="bi bi-telephone me-2" style="color: var(--accent);"></i> +7 (999) 123-45-67</p>
-                <p class="mb-2"><i class="bi bi-geo-alt me-2" style="color: var(--accent);"></i> г. Москва, ул. Тверская, д. 1</p>
-                <p class="mb-0"><i class="bi bi-clock me-2" style="color: var(--accent);"></i> Пн-Пт: 10:00 – 19:00</p>
+            <div class="card h-100 p-4 no-hover">
+                <div class="card-body">
+                    <h5><i class="bi bi-envelope me-2" style="color: var(--accent);"></i>Электронная почта</h5>
+                    <p class="mb-3"><a href="mailto:info@renta.ru" class="text-decoration-none">info@renta.ru</a></p>
+                    <h5><i class="bi bi-telephone me-2" style="color: var(--accent);"></i>Телефон</h5>
+                    <p class="mb-3"><a href="tel:+79991234567" class="text-decoration-none">+7 (999) 123-45-67</a></p>
+                    <h5><i class="bi bi-geo-alt me-2" style="color: var(--accent);"></i>Адрес</h5>
+                    <p>Москва, ул. Тверская, 1</p>
+                    <h5>Социальные сети</h5>
+                    <div class="d-flex gap-3 mt-2">
+                        <a href="#" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;" title="Telegram"><i class="bi bi-telegram fs-5"></i></a>
+                        <a href="#" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;" title="VK"><i class="bi bi-vk fs-5"></i></a>
+                        <a href="#" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;" title="WhatsApp"><i class="bi bi-whatsapp fs-5"></i></a>
+                        <a href="#" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;" title="Instagram"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;" title="YouTube"><i class="bi bi-youtube fs-5"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card shadow-sm p-4">
-                <h5>Социальные сети</h5>
-                <p class="mb-1"><a href="#" class="text-decoration-none">Telegram</a></p>
-                <p class="mb-1"><a href="#" class="text-decoration-none">VKontakte</a></p>
-                <p class="mb-0"><a href="#" class="text-decoration-none">Instagram</a></p>
+            <div class="card h-100 p-4 no-hover">
+                <div class="card-body d-flex flex-column">
+                    <h5><i class="bi bi-map me-2" style="color: var(--accent);"></i>Мы на карте</h5>
+                    <div class="map-container flex-grow-1" id="contacts-map"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+{% block extra_js %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var map = L.map('contacts-map').setView([55.7558, 37.6173], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    L.marker([55.7558, 37.6173]).addTo(map).bindPopup('Москва, ул. Тверская, 1');
+});
+</script>
 {% endblock %}

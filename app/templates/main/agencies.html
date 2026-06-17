@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Агентства — RENTA{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Агентства недвижимости</h2>
+    <div class="row g-4">
+        {% for agency in agencies %}
+        <div class="col-md-6">
+            <a href="{{ url_for('main.agency_detail', id=agency.id) }}" class="text-decoration-none text-dark">
+                <div class="agency-card card p-4 no-hover h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                                <i class="bi bi-building fs-2" style="color: var(--accent);"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">{{ agency.name }}</h5>
+                                <p class="text-muted small mb-0"><i class="bi bi-geo-alt"></i> {{ agency.city }}</p>
+                            </div>
+                        </div>
+                        {% if agency.description %}
+                        <p class="text-muted small mb-2">{{ agency.description[:150] }}{% if agency.description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
+                        <div class="d-flex gap-3 small text-muted">
+                            {% if agency.phone %}<span><i class="bi bi-telephone"></i> {{ agency.phone }}</span>{% endif %}
+                            {% if agency.email %}<span><i class="bi bi-envelope"></i> {{ agency.email }}</span>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,24 +1,86 @@
 {% extends "base.html" %}
 {% block title %}О нас — RENTA{% endblock %}
 {% block content %}
-<div class="container py-5">
-    <h2 class="mb-4">О компании RENTA</h2>
-    <div class="row">
-        <div class="col-md-8">
-            <p class="lead">RENTA — это современная платформа для аренды жилья, созданная специально для молодых людей.</p>
-            <p>Мы понимаем, как сложно найти подходящее жильё, когда ты только начинаешь самостоятельную жизнь. Наша цель — сделать процесс поиска и аренды максимально простым, прозрачным и удобным.</p>
-            <h5 class="mt-4">Наши преимущества</h5>
-            <ul>
-                <li>Только проверенные арендодатели</li>
-                <li>Удобный поиск с фильтрацией по городу, цене и типу жилья</li>
-                <li>Система отзывов и рейтингов</li>
-                <li>Быстрая подача заявок онлайн</li>
-                <li>Поддержка на всех этапах аренды</li>
-            </ul>
+<section class="about-hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">О RENTA</h1>
+        <p class="lead mb-0">Современный сервис аренды жилья для молодых людей</p>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <h2>Наша миссия</h2>
+            <p class="text-muted">Мы делаем аренду жилья простой, прозрачной и доступной для каждого молодого человека. RENTA объединяет арендодателей и жильцов, предлагая удобные инструменты для поиска, связи и управления арендой.</p>
+            <p class="text-muted">Проверенные объявления, честные отзывы и поддержка на каждом этапе — вот что отличает нас от других сервисов.</p>
         </div>
-        <div class="col-md-4">
-            <img src="https://picsum.photos/400/300?random=3" alt="О компании" class="img-fluid rounded shadow-sm">
+        <div class="col-md-6">
+            <img src="https://picsum.photos/600/400?random=5" alt="О RENTA" class="img-fluid rounded shadow-sm">
         </div>
     </div>
-</div>
+
+    <h2 class="text-center mb-4">Преимущества</h2>
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 p-3 no-hover">
+                <div class="card-body text-center">
+                    <i class="bi bi-shield-check" style="font-size: 2.5rem; color: var(--accent);"></i>
+                    <h5 class="mt-2">Безопасность</h5>
+                    <p class="text-muted small">Проверка объявлений и пользователей для вашей безопасности.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3 no-hover">
+                <div class="card-body text-center">
+                    <i class="bi bi-lightning" style="font-size: 2.5rem; color: var(--accent);"></i>
+                    <h5 class="mt-2">Скорость</h5>
+                    <p class="text-muted small">Быстрый поиск и моментальная связь с арендодателем.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3 no-hover">
+                <div class="card-body text-center">
+                    <i class="bi bi-people" style="font-size: 2.5rem; color: var(--accent);"></i>
+                    <h5 class="mt-2">Сообщество</h5>
+                    <p class="text-muted small">Тысячи пользователей по всей России уже выбрали RENTA.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4">Наша команда</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card team-card p-3 text-center no-hover">
+                <img src="https://picsum.photos/200/200?random=10" class="team-img" alt="Алексей">
+                <h6>Алексей Смирнов</h6>
+                <p class="text-muted small">CEO & Сооснователь</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card team-card p-3 text-center no-hover">
+                <img src="https://picsum.photos/200/200?random=11" class="team-img" alt="Мария">
+                <h6>Мария Иванова</h6>
+                <p class="text-muted small">CPO & Сооснователь</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card team-card p-3 text-center no-hover">
+                <img src="https://picsum.photos/200/200?random=12" class="team-img" alt="Дмитрий">
+                <h6>Дмитрий Козлов</h6>
+                <p class="text-muted small">Tech Lead</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card team-card p-3 text-center no-hover">
+                <img src="https://picsum.photos/200/200?random=13" class="team-img" alt="Анна">
+                <h6>Анна Попова</h6>
+                <p class="text-muted small">Head of Design</p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

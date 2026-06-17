@@ -46,11 +46,27 @@ class User(UserMixin, db.Model):
         return self.role == 'tenant'
 
 
+class Agency(db.Model):
+    __tablename__ = 'agencies'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    logo = db.Column(db.String(255), nullable=True)
+    city = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    properties = db.relationship('Property', backref='agency', lazy='dynamic')
+
+
 class Property(db.Model):
     __tablename__ = 'properties'
 
     id = db.Column(db.Integer, primary_key=True)
     landlord_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    agency_id = db.Column(db.Integer, db.ForeignKey('agencies.id'), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)

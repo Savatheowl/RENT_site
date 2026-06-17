@@ -6,7 +6,7 @@
         <h1 class="display-4 fw-bold mb-3" style="font-family: 'Montserrat', sans-serif;">
             Найди своё жильё с <span style="color: var(--accent);">RENTA</span>
         </h1>
-        <p class="lead mb-4">Квартиры, комнаты и дома для молодых людей от 18 до 35 лет</p>
+        <p class="lead mb-4">Твой ключ к лучшему жилью — сними квартиру мечты уже сегодня</p>
         <form class="hero-search mx-auto" style="max-width: 600px;" method="GET" action="{{ url_for('main.catalog') }}">
             <div class="input-group">
                 <input type="text" name="city" class="form-control" placeholder="Введите город..." required>
@@ -18,38 +18,54 @@
 
 <section class="container py-5">
     <h2 class="text-center mb-4">Популярные объявления</h2>
-    <div class="row g-4">
-        {% for prop in properties %}
-        <div class="col-md-4 col-lg-4">
-            <div class="card property-card h-100">
-                {% set img = prop.main_image() %}
-                {% if img %}
-                <img src="{{ url_for('static', filename='uploads/' + img) }}" class="card-img-top" alt="{{ prop.title }}">
-                {% else %}
-                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <span class="text-white">Нет фото</span>
-                </div>
-                {% endif %}
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ prop.title }}</h5>
-                    <p class="card-text text-muted small mb-1">
-                        <i class="bi bi-geo-alt"></i> {{ prop.city }}
-                    </p>
-                    <p class="card-text text-muted small mb-2">
-                        {% if prop.rooms %} {{ prop.rooms }} комн. · {% endif %}
-                        {% if prop.area %}{{ prop.area }} м²{% endif %}
-                    </p>
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <span class="fw-bold" style="color: var(--accent); font-size: 1.2rem;">
-                            {{ prop.price }} ₽
-                            {% if prop.price_type == 'month' %}/мес{% elif prop.price_type == 'day' %}/сут{% else %}/место{% endif %}
-                        </span>
-                        <a href="{{ url_for('property.detail', id=prop.id) }}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+    <div id="popularCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000">
+        <div class="carousel-inner">
+            {% for chunk in properties|batch(3) %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <div class="row g-4">
+                    {% for prop in chunk %}
+                    <div class="col-md-4">
+                        <div class="card property-card h-100 no-hover">
+                            {% set img = prop.main_image() %}
+                            {% if img %}
+                            <img src="{{ url_for('static', filename='uploads/' + img) }}" class="card-img-top" alt="{{ prop.title }}">
+                            {% else %}
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="text-white">Нет фото</span>
+                            </div>
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ prop.title }}</h5>
+                                <p class="card-text text-muted small mb-1">
+                                    <i class="bi bi-geo-alt"></i> {{ prop.city }}
+                                </p>
+                                <p class="card-text text-muted small mb-2">
+                                    {% if prop.rooms %} {{ prop.rooms }} комн. · {% endif %}
+                                    {% if prop.area %}{{ prop.area }} м²{% endif %}
+                                </p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold" style="color: var(--accent); font-size: 1.2rem;">
+                                        {{ prop.price|price_format }} ₽
+                                        {% if prop.price_type == 'month' %}/мес{% elif prop.price_type == 'day' %}/сут{% else %}/место{% endif %}
+                                    </span>
+                                    <a href="{{ url_for('property.detail', id=prop.id) }}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+        {% if properties|length > 3 %}
+        <button class="carousel-control-prev" type="button" data-bs-target="#popularCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded-circle p-3"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#popularCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded-circle p-3"></span>
+        </button>
+        {% endif %}
     </div>
 </section>
 
