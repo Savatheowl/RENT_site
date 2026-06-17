@@ -4,7 +4,7 @@
 <section class="about-hero text-center">
     <div class="container">
         <h1 class="display-4 fw-bold">О RENTA</h1>
-        <p class="lead mb-0">Современный сервис аренды жилья для молодых людей</p>
+        <p class="lead mb-0">Современный сервис аренды жилья для всех</p>
     </div>
 </section>
 
@@ -16,7 +16,7 @@
             <p class="text-muted">Проверенные объявления, честные отзывы и поддержка на каждом этапе — вот что отличает нас от других сервисов.</p>
         </div>
         <div class="col-md-6">
-            <img src="https://picsum.photos/600/400?random=5" alt="О RENTA" class="img-fluid rounded shadow-sm">
+            <img src="{{ url_for('static', filename='images/about-section.jpg') }}" alt="О RENTA" class="img-fluid rounded shadow-sm">
         </div>
     </div>
 
@@ -55,28 +55,28 @@
     <div class="row g-4">
         <div class="col-md-3">
             <div class="card team-card p-3 text-center no-hover">
-                <img src="https://picsum.photos/200/200?random=10" class="team-img" alt="Алексей">
+                <img src="{{ url_for('static', filename='images/team-1.jpg') }}" class="team-img" alt="Алексей">
                 <h6>Алексей Смирнов</h6>
                 <p class="text-muted small">CEO & Сооснователь</p>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card team-card p-3 text-center no-hover">
-                <img src="https://picsum.photos/200/200?random=11" class="team-img" alt="Мария">
+                <img src="{{ url_for('static', filename='images/team-2.jpg') }}" class="team-img" alt="Мария">
                 <h6>Мария Иванова</h6>
                 <p class="text-muted small">CPO & Сооснователь</p>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card team-card p-3 text-center no-hover">
-                <img src="https://picsum.photos/200/200?random=12" class="team-img" alt="Дмитрий">
+                <img src="{{ url_for('static', filename='images/team-3.jpg') }}" class="team-img" alt="Дмитрий">
                 <h6>Дмитрий Козлов</h6>
                 <p class="text-muted small">Tech Lead</p>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card team-card p-3 text-center no-hover">
-                <img src="https://picsum.photos/200/200?random=13" class="team-img" alt="Анна">
+                <img src="{{ url_for('static', filename='images/team-4.jpg') }}" class="team-img" alt="Анна">
                 <h6>Анна Попова</h6>
                 <p class="text-muted small">Head of Design</p>
             </div>

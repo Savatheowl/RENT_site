@@ -1,8 +1,8 @@
 import os
 import random
+import shutil
 from datetime import datetime, timezone
 
-import requests
 from faker import Faker
 
 from app import create_app, db
@@ -39,20 +39,27 @@ PROPERTY_TYPES = ["apartment", "house", "room"]
 PRICE_TYPES = ["month", "day", "bed"]
 
 UPLOAD_DIR = os.path.join(app.root_path, "static", "uploads")
+SEED_IMG_DIR = os.path.join(os.path.dirname(__file__), "seed", "img")
 
 
-def download_image(filename, width=800, height=600):
-    url = f"https://picsum.photos/{width}/{height}?random={random.randint(1, 10000)}"
+SEED_IMAGES = sorted([
+    f for f in os.listdir(SEED_IMG_DIR)
+    if f.lower().endswith((".jpg", ".jpeg", ".png"))
+]) if os.path.isdir(SEED_IMG_DIR) else []
+
+
+def copy_seed_image(dest_filename, seed_index):
+    if not SEED_IMAGES:
+        print("No seed images found in seed/img/")
+        return False
+    src = os.path.join(SEED_IMG_DIR, SEED_IMAGES[seed_index % len(SEED_IMAGES)])
+    dst = os.path.join(UPLOAD_DIR, dest_filename)
     try:
-        resp = requests.get(url, timeout=15)
-        if resp.status_code == 200:
-            path = os.path.join(UPLOAD_DIR, filename)
-            with open(path, "wb") as f:
-                f.write(resp.content)
-            return True
+        shutil.copy2(src, dst)
+        return True
     except Exception as e:
-        print(f"Failed to download {filename}: {e}")
-    return False
+        print(f"Failed to copy {src}: {e}")
+        return False
 
 
 def seed():
@@ -168,18 +175,20 @@ def seed():
 
         db.session.commit()
 
-        print("Downloading property images from picsum.photos...")
+        print("Copying property images from seed/img/...")
+        img_index = 0
         for i, prop in enumerate(properties):
             for j in range(3):
                 filename = f"prop_{prop.id}_{j}.jpg"
-                print(f"  Downloading {filename}...", end=" ")
-                if download_image(filename):
+                print(f"  Copying {filename}...", end=" ")
+                if copy_seed_image(filename, img_index):
                     img = PropertyImage(
                         property_id=prop.id,
                         filename=filename,
                         is_main=(j == 0),
                     )
                     db.session.add(img)
+                    img_index += 1
                     print("OK")
                 else:
                     print("FAILED")
