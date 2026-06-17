@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Панель арендодателя — RENTA{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Панель арендодателя</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ total_properties }}</h3>
+                <small class="text-muted">Всего объявлений</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ active_properties }}</h3>
+                <small class="text-muted">Активных</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ total_requests }}</h3>
+                <small class="text-muted">Всего заявок</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ pending_requests }}</h3>
+                <small class="text-muted">Ожидают</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Рейтинг</h5>
+                    <h2 style="color: var(--accent);">{{ avg_rating }}</h2>
+                    <small class="text-muted">на основе {{ reviews_count }} отзывов</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Мои объявления</h5>
+                    <a href="{{ url_for('property.create') }}" class="btn btn-primary">Добавить объявление</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Заявки на жильё</h4>
+    {% if requests %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Объявление</th>
+                    <th>Арендатор</th>
+                    <th>Сообщение</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr>
+                    <td>{{ req.created_at.strftime('%d.%m') }}</td>
+                    <td><a href="{{ url_for('property.detail', id=req.property_id) }}">{{ req.property.title[:30] }}...</a></td>
+                    <td>{{ req.tenant.name }}</td>
+                    <td>{{ req.message[:50] if req.message else '—' }}</td>
+                    <td>
+                        <span class="badge {% if req.status == 'approved' %}bg-success{% elif req.status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                            {{ {'pending': 'Ожидает', 'approved': 'Одобрено', 'rejected': 'Отклонено'}[req.status] }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if req.status == 'pending' %}
+                        <form method="POST" action="{{ url_for('dashboard.approve_request', id=req.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">✓</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('dashboard.reject_request', id=req.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">✕</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">Пока нет заявок на ваши объявления.</p>
+    {% endif %}
+
+    <h4 class="mb-3 mt-4">Мои объявления</h4>
+    {% if properties %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Город</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prop in properties %}
+                <tr>
+                    <td><a href="{{ url_for('property.detail', id=prop.id) }}">{{ prop.title[:40] }}</a></td>
+                    <td>{{ prop.price }} ₽</td>
+                    <td>{{ prop.city }}</td>
+                    <td>
+                        <span class="badge {% if prop.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                            {{ {'active': 'Активно', 'inactive': 'Неактивно'}[prop.status] }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('property.edit', id=prop.id) }}" class="btn btn-outline-secondary btn-sm">Ред.</a>
+                        <form method="POST" action="{{ url_for('property.delete', id=prop.id) }}" class="d-inline" onsubmit="return confirm('Удалить?')">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Уд.</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">У вас пока нет объявлений.</p>
+    {% endif %}
+</div>
+{% endblock %}

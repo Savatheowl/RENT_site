@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель — RENTA{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Админ-панель</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ stats.total_users }}</h3>
+                <small class="text-muted">Пользователей</small>
+                <small>{{ stats.total_tenants }} арендаторов · {{ stats.total_landlords }} арендодателей</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ stats.total_properties }}</h3>
+                <small class="text-muted">Объявлений ({{ stats.active_properties }} активных)</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ stats.total_requests }}</h3>
+                <small class="text-muted">Заявок ({{ stats.pending_requests }} ожидают)</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3">
+                <h3 style="color: var(--accent);">{{ stats.total_reviews }}</h3>
+                <small class="text-muted">Отзывов</small>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3" id="adminTabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#users">Пользователи</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#properties">Объявления</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#reviews">Отзывы</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="users">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Email</th>
+                            <th>Роль</th>
+                            <th>Статус</th>
+                            <th>Дата</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ {'tenant': 'Арендатор', 'landlord': 'Арендодатель', 'admin': 'Админ'}[user.role] }}</td>
+                            <td>
+                                {% if user.is_banned %}
+                                <span class="badge bg-danger">Забанен</span>
+                                {% else %}
+                                <span class="badge bg-success">Активен</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+                            <td>
+                                {% if not user.is_admin() %}
+                                {% if user.is_banned %}
+                                <form method="POST" action="{{ url_for('admin.unban_user', id=user.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">Разбанить</button>
+                                </form>
+                                {% else %}
+                                <form method="POST" action="{{ url_for('admin.ban_user', id=user.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-warning btn-sm">Забанить</button>
+                                </form>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="properties">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Арендодатель</th>
+                            <th>Цена</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prop in properties %}
+                        <tr>
+                            <td>{{ prop.id }}</td>
+                            <td><a href="{{ url_for('property.detail', id=prop.id) }}">{{ prop.title[:40] }}</a></td>
+                            <td>{{ prop.landlord.name }}</td>
+                            <td>{{ prop.price }} ₽</td>
+                            <td>
+                                <span class="badge {% if prop.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ prop.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if prop.status == 'active' %}
+                                <form method="POST" action="{{ url_for('admin.hide_property', id=prop.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-warning btn-sm">Скрыть</button>
+                                </form>
+                                {% endif %}
+                                <form method="POST" action="{{ url_for('admin.delete_property', id=prop.id) }}" class="d-inline" onsubmit="return confirm('Удалить объявление?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="reviews">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Автор</th>
+                            <th>Арендодатель</th>
+                            <th>Рейтинг</th>
+                            <th>Текст</th>
+                            <th>Дата</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in reviews %}
+                        <tr>
+                            <td>{{ review.id }}</td>
+                            <td>{{ review.author.name }}</td>
+                            <td>{{ review.landlord_rel.name }}</td>
+                            <td>{{ review.rating }}/5</td>
+                            <td>{{ review.text[:50] if review.text else '—' }}</td>
+                            <td>{{ review.created_at.strftime('%d.%m.%Y') }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_review', id=review.id) }}" class="d-inline" onsubmit="return confirm('Удалить отзыв?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
