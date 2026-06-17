@@ -29,6 +29,8 @@ class User(UserMixin, db.Model):
                                     foreign_keys='Review.author_id')
     reviews_received = db.relationship('Review', backref='landlord_rel', lazy='dynamic',
                                        foreign_keys='Review.landlord_id')
+    favorites = db.relationship('Favorite', backref='user', lazy='dynamic',
+                                foreign_keys='Favorite.user_id')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

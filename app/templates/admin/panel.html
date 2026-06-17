@@ -6,26 +6,26 @@
 
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ stats.total_users }}</h3>
                 <small class="text-muted">Пользователей</small>
                 <small>{{ stats.total_tenants }} арендаторов · {{ stats.total_landlords }} арендодателей</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ stats.total_properties }}</h3>
                 <small class="text-muted">Объявлений ({{ stats.active_properties }} активных)</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ stats.total_requests }}</h3>
                 <small class="text-muted">Заявок ({{ stats.pending_requests }} ожидают)</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ stats.total_reviews }}</h3>
                 <small class="text-muted">Отзывов</small>
             </div>
@@ -72,10 +72,12 @@
                                 {% if not user.is_admin() %}
                                 {% if user.is_banned %}
                                 <form method="POST" action="{{ url_for('admin.unban_user', id=user.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-success btn-sm">Разбанить</button>
                                 </form>
                                 {% else %}
                                 <form method="POST" action="{{ url_for('admin.ban_user', id=user.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-warning btn-sm">Забанить</button>
                                 </form>
                                 {% endif %}
@@ -107,7 +109,7 @@
                             <td>{{ prop.id }}</td>
                             <td><a href="{{ url_for('property.detail', id=prop.id) }}">{{ prop.title[:40] }}</a></td>
                             <td>{{ prop.landlord.name }}</td>
-                            <td>{{ prop.price }} ₽</td>
+                            <td>{{ prop.price|price_format }} ₽</td>
                             <td>
                                 <span class="badge {% if prop.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
                                     {{ prop.status }}
@@ -116,10 +118,12 @@
                             <td>
                                 {% if prop.status == 'active' %}
                                 <form method="POST" action="{{ url_for('admin.hide_property', id=prop.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-warning btn-sm">Скрыть</button>
                                 </form>
                                 {% endif %}
                                 <form method="POST" action="{{ url_for('admin.delete_property', id=prop.id) }}" class="d-inline" onsubmit="return confirm('Удалить объявление?')">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                                 </form>
                             </td>
@@ -155,6 +159,7 @@
                             <td>{{ review.created_at.strftime('%d.%m.%Y') }}</td>
                             <td>
                                 <form method="POST" action="{{ url_for('admin.delete_review', id=review.id) }}" class="d-inline" onsubmit="return confirm('Удалить отзыв?')">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                                 </form>
                             </td>

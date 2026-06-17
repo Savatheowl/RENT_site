@@ -7,7 +7,7 @@
     <div class="row g-4">
         {% for fav in favorites %}
         <div class="col-md-4 col-lg-3">
-            <div class="card property-card h-100">
+            <div class="card property-card h-100 no-hover">
                 {% set img = fav.property.main_image() %}
                 {% if img %}
                 <img src="{{ url_for('static', filename='uploads/' + img) }}" class="card-img-top" alt="{{ fav.property.title }}">
@@ -20,10 +20,11 @@
                     <h6 class="card-title">{{ fav.property.title[:50] }}</h6>
                     <p class="card-text text-muted small">{{ fav.property.city }}</p>
                     <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <span class="fw-bold" style="color: var(--accent);">{{ fav.property.price }} ₽</span>
+                        <span class="fw-bold" style="color: var(--accent);">{{ fav.property.price|price_format }} ₽</span>
                         <div>
                             <a href="{{ url_for('property.detail', id=fav.property_id) }}" class="btn btn-outline-primary btn-sm">Открыть</a>
                             <form method="POST" action="{{ url_for('property.toggle_favorite', id=fav.property_id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">✕</button>
                             </form>
                         </div>

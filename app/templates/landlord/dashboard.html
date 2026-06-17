@@ -6,25 +6,25 @@
 
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ total_properties }}</h3>
                 <small class="text-muted">Всего объявлений</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ active_properties }}</h3>
                 <small class="text-muted">Активных</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ total_requests }}</h3>
                 <small class="text-muted">Всего заявок</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center p-3">
+            <div class="card text-center p-3 no-hover h-100">
                 <h3 style="color: var(--accent);">{{ pending_requests }}</h3>
                 <small class="text-muted">Ожидают</small>
             </div>
@@ -80,9 +80,11 @@
                     <td>
                         {% if req.status == 'pending' %}
                         <form method="POST" action="{{ url_for('dashboard.approve_request', id=req.id) }}" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-success btn-sm">✓</button>
                         </form>
                         <form method="POST" action="{{ url_for('dashboard.reject_request', id=req.id) }}" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-danger btn-sm">✕</button>
                         </form>
                         {% endif %}
@@ -113,7 +115,7 @@
                 {% for prop in properties %}
                 <tr>
                     <td><a href="{{ url_for('property.detail', id=prop.id) }}">{{ prop.title[:40] }}</a></td>
-                    <td>{{ prop.price }} ₽</td>
+                    <td>{{ prop.price|price_format }} ₽</td>
                     <td>{{ prop.city }}</td>
                     <td>
                         <span class="badge {% if prop.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
@@ -123,6 +125,7 @@
                     <td>
                         <a href="{{ url_for('property.edit', id=prop.id) }}" class="btn btn-outline-secondary btn-sm">Ред.</a>
                         <form method="POST" action="{{ url_for('property.delete', id=prop.id) }}" class="d-inline" onsubmit="return confirm('Удалить?')">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-outline-danger btn-sm">Уд.</button>
                         </form>
                     </td>

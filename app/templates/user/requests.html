@@ -7,14 +7,17 @@
     <div class="row g-4">
         {% for req in requests %}
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm no-hover">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h5><a href="{{ url_for('property.detail', id=req.property_id) }}" class="text-decoration-none">{{ req.property.title }}</a></h5>
-                            <p class="text-muted small mb-2">{{ req.property.city }} · {{ req.property.price }} ₽</p>
+                            <p class="text-muted small mb-2">{{ req.property.city }} · {{ req.property.price|price_format }} ₽
+                            {% if req.property.area %} · {{ req.property.area }} м²{% endif %}
+                            {% if req.property.rooms %} · {{ req.property.rooms }} комн.{% endif %}
+                            </p>
                             {% if req.message %}
-                            <p class="mb-2"><strong>Сообщение:</strong> {{ req.message }}</p>
+                            <p class="mb-0"><strong>Сообщение:</strong> {{ req.message }}</p>
                             {% endif %}
                         </div>
                         <span class="badge {% if req.status == 'approved' %}bg-success{% elif req.status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %}">
