@@ -138,6 +138,14 @@ footer a:hover {
     margin: 0 auto 1rem;
 }
 
+.landlord-card-agency {
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+.landlord-card-agency:hover {
+    box-shadow: var(--shadow-hover);
+}
+
 .agency-card {
     transition: box-shadow 0.3s ease;
     border-radius: 12px;

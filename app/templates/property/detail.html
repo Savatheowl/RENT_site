@@ -80,12 +80,16 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-3 no-hover">
+            <div class="card shadow-sm mb-3 no-hover{% if property.agency %} landlord-card-agency{% endif %}">
+                {% if property.agency %}
+                <a href="{{ url_for('main.agency_detail', id=property.agency.id) }}" class="text-decoration-none text-dark d-block card-body">
+                {% else %}
                 <div class="card-body">
+                {% endif %}
                     <h5>Арендодатель</h5>
                     <p class="mb-1"><strong>{{ property.landlord.name }}</strong></p>
                     {% if property.agency %}
-                    <p class="mb-1 small"><i class="bi bi-building"></i> <a href="{{ url_for('main.agency_detail', id=property.agency.id) }}">{{ property.agency.name }}</a></p>
+                    <p class="mb-1 small"><i class="bi bi-building"></i> {{ property.agency.name }}</p>
                     {% endif %}
                     {% if avg_rating > 0 %}
                     <p class="mb-1">
@@ -95,7 +99,11 @@
                         <span class="text-muted small">{{ avg_rating }} ({{ landlord_reviews|length }} отзывов)</span>
                     </p>
                     {% endif %}
+                {% if property.agency %}
+                </a>
+                {% else %}
                 </div>
+                {% endif %}
             </div>
 
             {% if landlord_reviews %}
