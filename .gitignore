@@ -4,3 +4,6 @@ __pycache__/
 instance/*.db
 *.db
 .env
+
+
+app\static\uploads\
