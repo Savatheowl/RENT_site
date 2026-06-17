@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Каталог жилья — RENTA{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='nouislider-15.8.1/nouislider.min.css') }}">
+{% endblock %}
 {% block content %}
 <div class="container py-4">
     <h2 class="mb-4">Каталог жилья</h2>
 
     <form class="row g-3 mb-4 p-3 bg-white rounded shadow-sm" method="GET">
         <div class="col-md-3">
+            <label class="form-label small text-muted">Город</label>
             <input type="text" name="city" class="form-control" placeholder="Город" value="{{ request.args.get('city', '') }}">
         </div>
         <div class="col-md-2">
+            <label class="form-label small text-muted">Тип</label>
             <select name="property_type" class="form-select">
                 <option value="">Все типы</option>
                 <option value="apartment" {% if request.args.get('property_type') == 'apartment' %}selected{% endif %}>Квартира</option>
@@ -16,39 +21,42 @@
                 <option value="room" {% if request.args.get('property_type') == 'room' %}selected{% endif %}>Комната</option>
             </select>
         </div>
-        <div class="col-md-2">
-            <input type="number" name="price_min" class="form-control" placeholder="Цена от" value="{{ request.args.get('price_min', '') }}" min="{{ min_price }}" max="{{ max_price }}">
-            <div class="mt-1">
-                <input type="range" class="form-range" name="price_min_range" min="{{ min_price }}" max="{{ max_price }}" value="{{ request.args.get('price_min', min_price) }}" oninput="this.previousElementSibling.value=this.value">
+        <div class="col-md-4">
+            <label class="form-label small text-muted">Цена</label>
+            <div class="row g-1">
+                <div class="col-6">
+                    <input type="number" name="price_min" class="form-control form-control-sm" placeholder="от" value="{{ request.args.get('price_min', min_price) }}" min="{{ min_price }}" max="{{ max_price }}">
+                </div>
+                <div class="col-6">
+                    <input type="number" name="price_max" class="form-control form-control-sm" placeholder="до" value="{{ request.args.get('price_max', max_price) }}" min="{{ min_price }}" max="{{ max_price }}">
+                </div>
             </div>
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="price_max" class="form-control" placeholder="Цена до" value="{{ request.args.get('price_max', '') }}" min="{{ min_price }}" max="{{ max_price }}">
-            <div class="mt-1">
-                <input type="range" class="form-range" name="price_max_range" min="{{ min_price }}" max="{{ max_price }}" value="{{ request.args.get('price_max', max_price) }}" oninput="this.previousElementSibling.value=this.value">
-            </div>
+            <div id="price-slider" class="mt-2" data-min="{{ min_price }}" data-max="{{ max_price }}" data-start-min="{{ request.args.get('price_min', min_price) }}" data-start-max="{{ request.args.get('price_max', max_price) }}"></div>
         </div>
         <div class="col-md-3">
+            <label class="form-label small text-muted">&nbsp;</label>
             <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
             <a href="{{ url_for('main.catalog') }}" class="btn btn-outline-secondary w-100 mt-1">Сбросить</a>
         </div>
-        <div class="col-md-2">
-            <input type="number" name="area_min" class="form-control" placeholder="Площадь от" value="{{ request.args.get('area_min', '') }}" min="{{ min_area }}" max="{{ max_area }}">
-            <div class="mt-1">
-                <input type="range" class="form-range" name="area_min_range" min="{{ min_area }}" max="{{ max_area }}" value="{{ request.args.get('area_min', min_area) }}" oninput="this.previousElementSibling.value=this.value">
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Площадь</label>
+            <div class="row g-1">
+                <div class="col-6">
+                    <input type="number" name="area_min" class="form-control form-control-sm" placeholder="от" value="{{ request.args.get('area_min', min_area) }}" min="{{ min_area }}" max="{{ max_area }}" step="0.1">
+                </div>
+                <div class="col-6">
+                    <input type="number" name="area_max" class="form-control form-control-sm" placeholder="до" value="{{ request.args.get('area_max', max_area) }}" min="{{ min_area }}" max="{{ max_area }}" step="0.1">
+                </div>
             </div>
+            <div id="area-slider" class="mt-2" data-min="{{ min_area }}" data-max="{{ max_area }}" data-start-min="{{ request.args.get('area_min', min_area) }}" data-start-max="{{ request.args.get('area_max', max_area) }}"></div>
         </div>
         <div class="col-md-2">
-            <input type="number" name="area_max" class="form-control" placeholder="Площадь до" value="{{ request.args.get('area_max', '') }}" min="{{ min_area }}" max="{{ max_area }}">
-            <div class="mt-1">
-                <input type="range" class="form-range" name="area_max_range" min="{{ min_area }}" max="{{ max_area }}" value="{{ request.args.get('area_max', max_area) }}" oninput="this.previousElementSibling.value=this.value">
-            </div>
+            <label class="form-label small text-muted">Этаж от</label>
+            <input type="number" name="floor_min" class="form-control" placeholder="от" value="{{ request.args.get('floor_min', '') }}">
         </div>
         <div class="col-md-2">
-            <input type="number" name="floor_min" class="form-control" placeholder="Этаж от" value="{{ request.args.get('floor_min', '') }}">
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="floor_max" class="form-control" placeholder="Этаж до" value="{{ request.args.get('floor_max', '') }}">
+            <label class="form-label small text-muted">Этаж до</label>
+            <input type="number" name="floor_max" class="form-control" placeholder="до" value="{{ request.args.get('floor_max', '') }}">
         </div>
     </form>
 
@@ -114,4 +122,54 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='nouislider-15.8.1/nouislider.min.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function initSlider(containerId, inputMin, inputMax) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        var min = parseFloat(container.dataset.min) || 0;
+        var max = parseFloat(container.dataset.max) || 1000;
+        var startMin = parseFloat(container.dataset.startMin) || min;
+        var startMax = parseFloat(container.dataset.startMax) || max;
+
+        var inputMinEl = document.querySelector('input[name="' + inputMin + '"]');
+        var inputMaxEl = document.querySelector('input[name="' + inputMax + '"]');
+
+        var slider = noUiSlider.create(container, {
+            start: [startMin, startMax],
+            connect: true,
+            range: { 'min': min, 'max': max },
+            step: (max - min) / 100 || 1,
+            format: {
+                to: function(value) { return Math.round(value); },
+                from: function(value) { return Number(value); }
+            }
+        });
+
+        slider.on('update', function(values) {
+            if (inputMinEl) inputMinEl.value = values[0];
+            if (inputMaxEl) inputMaxEl.value = values[1];
+        });
+
+        if (inputMinEl) {
+            inputMinEl.addEventListener('change', function() {
+                var val = [parseFloat(this.value) || min, parseFloat(inputMaxEl.value) || max];
+                slider.set(val);
+            });
+        }
+        if (inputMaxEl) {
+            inputMaxEl.addEventListener('change', function() {
+                var val = [parseFloat(inputMinEl.value) || min, parseFloat(this.value) || max];
+                slider.set(val);
+            });
+        }
+    }
+
+    initSlider('price-slider', 'price_min', 'price_max');
+    initSlider('area-slider', 'area_min', 'area_max');
+});
+</script>
 {% endblock %}
