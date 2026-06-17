@@ -1,0 +1,3 @@
+- admin@renta.ru / admin123
+- landlord1@renta.ru / landlord123
+- tenant1@renta.ru / tenant123
