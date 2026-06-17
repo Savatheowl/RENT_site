@@ -66,7 +66,7 @@
                         <div class="mb-3">
                             {{ request_form.message(class="form-control", rows=3, placeholder="Напишите сообщение арендодателю (необязательно)") }}
                         </div>
-                        {{ request_form.submit(class="btn btn-primary w-100") }}
+                        {{ request_form.submit_request(class="btn btn-primary w-100") }}
                     </form>
                     <hr>
                     <form method="POST" action="{{ url_for('property.toggle_favorite', id=property.id) }}">
@@ -142,7 +142,7 @@
                         <div class="mb-3">
                             {{ review_form.text(class="form-control", rows=2, placeholder="Ваш отзыв (необязательно)") }}
                         </div>
-                        {{ review_form.submit(class="btn btn-outline-primary w-100") }}
+                        {{ review_form.submit_review(class="btn btn-outline-primary w-100") }}
                     </form>
                 </div>
             </div>

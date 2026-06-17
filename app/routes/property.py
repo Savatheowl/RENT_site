@@ -55,7 +55,8 @@ def detail(id):
     review_form = ReviewForm()
 
     if (
-        request_form.validate_on_submit()
+        request_form.submit_request.data
+        and request_form.validate_on_submit()
         and current_user.is_authenticated
         and current_user.is_tenant()
     ):
@@ -76,7 +77,8 @@ def detail(id):
         return redirect(url_for("property.detail", id=prop.id))
 
     if (
-        review_form.validate_on_submit()
+        review_form.submit_review.data
+        and review_form.validate_on_submit()
         and current_user.is_authenticated
         and current_user.is_tenant()
     ):
@@ -242,11 +244,9 @@ def toggle_favorite(id):
     if fav:
         db.session.delete(fav)
         db.session.commit()
-        flash("Удалено из избранного.", "info")
     else:
         fav = Favorite(user_id=current_user.id, property_id=id)
         db.session.add(fav)
         db.session.commit()
-        flash("Добавлено в избранное!", "success")
 
     return redirect(request.referrer or url_for("property.detail", id=id))

@@ -17,6 +17,7 @@ from wtforms.validators import (
     Length,
     NumberRange,
     Optional,
+    ValidationError,
 )
 
 
@@ -69,12 +70,16 @@ class PropertyForm(FlaskForm):
     images = FileField("Фотографии (можно выбрать несколько)")
     submit = SubmitField("Сохранить")
 
+    def validate_max_floor(form, field):
+        if form.floor.data and field.data and form.floor.data > field.data:
+            raise ValidationError("Общее количество этажей должно быть больше или равно этажу объекта")
+
 
 class RequestForm(FlaskForm):
     message = TextAreaField(
         "Сообщение арендодателю", validators=[Optional(), Length(max=500)]
     )
-    submit = SubmitField("Отправить заявку")
+    submit_request = SubmitField("Отправить заявку")
 
 
 class ReviewForm(FlaskForm):
@@ -82,4 +87,4 @@ class ReviewForm(FlaskForm):
         "Оценка", choices=[(5, "5"), (4, "4"), (3, "3"), (2, "2"), (1, "1")], coerce=int
     )
     text = TextAreaField("Отзыв", validators=[Optional(), Length(max=1000)])
-    submit = SubmitField("Оставить отзыв")
+    submit_review = SubmitField("Оставить отзыв")
